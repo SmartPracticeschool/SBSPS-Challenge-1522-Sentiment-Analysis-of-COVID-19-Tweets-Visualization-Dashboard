@@ -67,6 +67,8 @@ def text_process(tweet):
 predictor = pickle.load(open("Sentiment Predictor", 'rb'))  # Code to load ML model for later use
 
 app = dash.Dash(__name__)
+app.title = 'Covid19 Sentiment Analysis'
+server = app.server
 
 date_range = {1:['2020-03-25','2020-04-14'],
               2:['2020-04-15','2020-05-03'],
@@ -87,7 +89,7 @@ image_location = '/assets/'
 
 # ----------------------------------------------------------------------------------------------------------------------------------------
 #Import and clean data (importing csv into pandas)
-df = pd.read_csv("Hashtag data.csv")
+df = pd.read_csv("Hashtag Data.csv")
 df1 = pd.read_csv("Topic Data.csv")
 df2 = pd.read_csv("Sentiment.csv")
 df2['Date'] = pd.to_datetime(df2['Date'])
@@ -99,41 +101,48 @@ df4 = pd.read_csv("Graph Prediction.csv")
 # App layout
 app.layout = html.Div([
 
+    html.Div(
     html.H1("COVID-19 Sentiment Analysis",className = "jumbotron"),
+    style={'padding-bottom':'20px'}),
 
     html.Div(
     dcc.Slider(id="slct_period",
                 min=0,
                 max=5,
                 marks={
-                    0:'General',
-                    1:'LD1',
-                    2:'LD2',
-                    3:'LD3',
-                    4:'LD4',
-                    5:'Unlock1'
+                    0:{'label': 'General', 'style': {'color': '#FFFFFF','font-size':'18px','padding-left':'10px'}},
+                    1:{'label': 'LD1', 'style': {'color': '#FFFFFF','font-size':'18px'}},
+                    2:{'label': 'LD2', 'style': {'color': '#FFFFFF','font-size':'18px'}},
+                    3:{'label': 'LD3', 'style': {'color': '#FFFFFF','font-size':'18px'}},
+                    4:{'label': 'LD4', 'style': {'color': '#FFFFFF','font-size':'18px'}},
+                    5:{'label': 'Unlock1', 'style': {'color': '#FFFFFF','font-size':'18px','padding-right':'10px'}}
                 },
                 value=0
-                ),style={'text_size':'15px'}),
+                )),
 
     html.Div(
-    dcc.Graph(id = 'sentiment_analysis')),
+    dcc.Graph(id = 'sentiment_analysis'),style={'padding-top':'20px','padding-bottom':'20px'}),
+
+    html.Div([
 
     html.Div(
-    dcc.Graph(id = 'sentiment_analysis1'),
-    style={'padding':'0px 50px 0px 80px','width': '40%', 'display': 'inline-block'}),
+    className='row',
+    children = [
+    html.Div(
+    dcc.Graph(id = 'sentiment_analysis1'),className='column'),
 
     html.Div(
-    dcc.Graph(id = 'sentiment_analysis2'),
-    style={'padding': '25px 50px 0px 50px', 'width': '40%', 'display': 'inline-block'}),
+    dcc.Graph(id = 'sentiment_analysis2'),className='column')]),
 
     html.Div(
-    dcc.Graph(id = 'sentiment_analysis3'),
-    style={'width': '40%', 'display': 'inline-block','padding': '50px 0px 50px 80px'}),
+    className='row',
+    children = [
+    html.Div(
+    dcc.Graph(id = 'sentiment_analysis3'),className='column'),
 
-    html.Img(id = 'word_cloud',style={'height':'35%','display': 'inline-block','width':'40%','padding': '100px 0px 50px 100px'}),
+    html.Img(id = 'word_cloud',className='column',style = {"height": "450px"})])]),
 
-    html.Div(dcc.Graph(id='sentiment_graph')),
+    html.Div(dcc.Graph(id='sentiment_graph'),style={'padding-top':'10px','padding-bottom':'10px'}),
 
     html.H2("Sentiment Prediction end date: ",style={'width': '50%', 'display': 'inline-block', 'text-align': 'right','padding-right':'10px'}),
 
@@ -199,7 +208,7 @@ def update_graph(slct_period):
     else:
         df_plot = df[df['Phase']==phase_range[slct_period]]
 
-    fig = px.bar(df_plot,x='hashtag',y='value',color='value',labels={'hashtag':'Hashtags','value':"Values"},height=600,width=600)
+    fig = px.bar(df_plot,x='hashtag',y='value',color='value',labels={'hashtag':'Hashtags','value':"Values"},height=500)
     fig.update_layout(title={'text': "Trending Hashtags",'y':0.95,'x':0.47,'xanchor': 'center','yanchor': 'top'})
 
     return fig
@@ -214,7 +223,7 @@ def update_graph(slct_period):
         df_plot = df1.copy().groupby('topic_data').sum().reset_index().sort_values(by='topic_count',ascending=False)
     else:
         df_plot = df1[df1['Phase']==phase_range[slct_period]]
-    fig = px.bar(df_plot,x='topic_data',y='topic_count',color='topic_count',labels={'topic_data':'Topics','topic_count':"Values"},height=600,width=600)
+    fig = px.bar(df_plot,x='topic_data',y='topic_count',color='topic_count',labels={'topic_data':'Topics','topic_count':"Values"},height=500)
     fig.update_layout(xaxis=dict(showticklabels=False),title={'text': "Trending Topics",'y':0.95,'x':0.49,'xanchor': 'center','yanchor': 'top'})
 
     return fig
