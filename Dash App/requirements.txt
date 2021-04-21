@@ -68,7 +68,7 @@ plotly==4.8.2
 pmdarima==1.6.1
 prometheus-client==0.8.0
 prompt-toolkit==3.0.5
-Pygments==2.6.1
+Pygments==2.7.4
 PyJWT==1.7.1
 pyparsing==2.4.7
 pyquery==1.4.1
