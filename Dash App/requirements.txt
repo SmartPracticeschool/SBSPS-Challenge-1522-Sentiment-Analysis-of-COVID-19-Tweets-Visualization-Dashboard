@@ -69,7 +69,7 @@ pmdarima==1.6.1
 prometheus-client==0.8.0
 prompt-toolkit==3.0.5
 Pygments==2.6.1
-PyJWT==1.7.1
+PyJWT==2.4.0
 pyparsing==2.4.7
 pyquery==1.4.1
 pyrsistent==0.16.0
